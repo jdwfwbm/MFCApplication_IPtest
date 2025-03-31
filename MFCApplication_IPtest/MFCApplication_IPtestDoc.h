@@ -45,4 +45,17 @@ protected:
 	// 검색 처리기에 대한 검색 콘텐츠를 설정하는 도우미 함수
 	void SetSearchContent(const CString& value);
 #endif // SHARED_HANDLERS
+public:
+	virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
+	unsigned char* m_InputImage;
+	int m_width;
+	int m_height;
+	int m_size;
+
+	unsigned char* m_OutputImage;
+	int m_Re_width;
+	int m_Re_height;
+	int m_Re_size;
+	void OnDownSampling();
+	void OnUpSampling();
 };

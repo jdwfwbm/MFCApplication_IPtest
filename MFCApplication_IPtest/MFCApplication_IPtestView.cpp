@@ -29,6 +29,8 @@ BEGIN_MESSAGE_MAP(CMFCApplicationIPtestView, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CMFCApplicationIPtestView::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_COMMAND(ID_Down_Sampling, &CMFCApplicationIPtestView::OnDownSampling)
+	ON_COMMAND(ID_UP_SAMPLING, &CMFCApplicationIPtestView::OnUpSampling)
 END_MESSAGE_MAP()
 
 // CMFCApplicationIPtestView 생성/소멸
@@ -53,14 +55,32 @@ BOOL CMFCApplicationIPtestView::PreCreateWindow(CREATESTRUCT& cs)
 
 // CMFCApplicationIPtestView 그리기
 
-void CMFCApplicationIPtestView::OnDraw(CDC* /*pDC*/)
+void CMFCApplicationIPtestView::OnDraw(CDC* pDC)
 {
 	CMFCApplicationIPtestDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
 
-	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
+	int i, j;
+	unsigned char R, G, B;
+
+	for (i = 0; i < pDoc->m_height; i++) {
+		for (j = 0; j < pDoc->m_width; j++) {
+			R = G = B = pDoc->m_InputImage[i * pDoc->m_width + j];
+			pDC->SetPixel(j + 5, i + 5, RGB(R, G, B));
+		}
+	}
+	
+	for (i = 0; i < pDoc->m_Re_height; i++) {
+		for (j = 0; j < pDoc->m_Re_width; j++) {
+			R = pDoc->m_OutputImage[i * pDoc->m_Re_width + j];
+			G = B = R;
+			pDC->SetPixel(j + pDoc->m_width + 10, i + 5, RGB(R, G, B));
+		}
+	}
+
+
 }
 
 
@@ -126,3 +146,25 @@ CMFCApplicationIPtestDoc* CMFCApplicationIPtestView::GetDocument() const // 디�
 
 
 // CMFCApplicationIPtestView 메시지 처리기
+
+void CMFCApplicationIPtestView::OnDownSampling()
+{
+	// TODO: Add your command handler code here
+	CMFCApplicationIPtestDoc* pDoc = GetDocument(); // Doc 클래스 참조
+	ASSERT_VALID(pDoc);
+
+	pDoc->OnDownSampling(); // Doc 클래스에 OnDownSampling 함수 호출
+
+	Invalidate(TRUE); // 화면 갱신
+
+}
+
+void CMFCApplicationIPtestView::OnUpSampling()
+{
+	CMFCApplicationIPtestDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+
+	pDoc->OnUpSampling();
+
+	Invalidate(TRUE); 
+}

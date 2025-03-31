@@ -11,6 +11,8 @@
 #endif
 
 #include "MFCApplication_IPtestDoc.h"
+#include "CDownSampleDlg.h"
+#include "CUpSampleDlg.h"
 
 #include <propkey.h>
 
@@ -136,3 +138,100 @@ void CMFCApplicationIPtestDoc::Dump(CDumpContext& dc) const
 
 
 // CMFCApplicationIPtestDoc 명령
+
+BOOL CMFCApplicationIPtestDoc::OnOpenDocument(LPCTSTR lpszPathName)
+{
+	if (!CDocument::OnOpenDocument(lpszPathName))
+		return FALSE;
+
+	CFile File; // 파일 객체 선언
+
+	File.Open(lpszPathName, CFile::modeRead | CFile::typeBinary);
+	// 파일 열기 대화상자에서 선택한 파일을 지정하고 읽기 모드 선택
+
+	// 이 책에서는 영상의 크기 256*256, 512*512, 640*480만을 사용한다.
+	if (File.GetLength() == 256 * 256) { // RAW 파일의 크기 결정
+
+		m_height = 256;
+		m_width = 256;
+	}
+	else if (File.GetLength() == 512 * 512) { // RAW 파일의 크기 결정
+		m_height = 512;
+		m_width = 512;
+	}
+	else if (File.GetLength() == 640 * 480) { // RAW 파일의 크기 결정
+		m_height = 480;
+		m_width = 640;
+	}
+	else {
+		AfxMessageBox(L"Not Support Image Size"); // 해당 크기가 없는 경우
+		return 0;
+	}
+	m_size = m_width * m_height; // 영상의 크기 계산
+
+	m_InputImage = new unsigned char[m_size];
+	// 입력 영상의 크기에 맞는 메모리 할당
+
+	for (int i = 0; i < m_size; i++)
+		m_InputImage[i] = 255; // 초기화
+	File.Read(m_InputImage, m_size); // 입력 영상 파일 읽기
+	File.Close(); // 파일 닫기
+
+	return TRUE;
+
+}
+
+void CMFCApplicationIPtestDoc::OnDownSampling()
+{
+	int i, j;
+	CDownSampleDlg dlg;
+	if (dlg.DoModal() == IDOK) // 대화상자의 활성화 여부
+	{
+		m_Re_height = m_height / dlg.m_DownSampleRate;
+		// 축소 영상의 세로 길이를 계산
+		m_Re_width = m_width / dlg.m_DownSampleRate;
+		// 축소 영상의 가로 길이를 계산
+		m_Re_size = m_Re_height * m_Re_width;
+		// 축소 영상의 크기를 계산
+
+		m_OutputImage = new unsigned char[m_Re_size];
+		// 축소 영상을 위한 메모리 할당
+
+		for (i = 0; i < m_Re_height; i++) {
+			for (j = 0; j < m_Re_width; j++) {
+				m_OutputImage[i * m_Re_width + j]
+					= m_InputImage[(i * dlg.m_DownSampleRate * m_width) + dlg.m_DownSampleRate * j];
+				// 축소 영상을 생성
+			}
+		}
+	}
+
+}
+
+void CMFCApplicationIPtestDoc::OnUpSampling()
+{
+	int i, j;
+
+	CUpSampleDlg dlg;
+	if (dlg.DoModal() == IDOK) { // DoModal 대화상자의 활성화 여부
+		m_Re_height = m_height * dlg.m_UpSampleRate;
+		// 확대 영상의 세로 길이 계산
+		m_Re_width = m_width * dlg.m_UpSampleRate;
+		// 확대 영상의 가로 길이 계산
+		m_Re_size = m_Re_height * m_Re_width;
+		// 확대 영상의 크기 계산
+		m_OutputImage = new unsigned char[m_Re_size];
+		// 확대 영상을 위한 메모리 할당
+
+		for (i = 0; i < m_Re_size; i++)
+			m_OutputImage[i] = 0; // 초기화
+
+		for (i = 0; i < m_height; i++) {
+			for (j = 0; j < m_width; j++) {
+				m_OutputImage[i * dlg.m_UpSampleRate * m_Re_width +
+					dlg.m_UpSampleRate * j] = m_InputImage[i * m_width + j];
+			} // 재배치하여 영상 확대
+		}
+	}
+
+}
