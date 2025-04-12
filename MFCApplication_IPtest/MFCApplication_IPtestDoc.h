@@ -58,4 +58,16 @@ public:
 	int m_Re_size;
 	void OnDownSampling();
 	void OnUpSampling();
+	void OnSumConstant();
+	void OnSubConstant();
+	void OnMulConstant();
+	void OnDivConstant();
+	void OnAndOperate();
+	void OnOrOperate();
+	void OnXorOperate();
+	void OnGammaCorrection();
+	void OnBinarization();
+	void OnNegaTransform();
+	void OnStressTransform();
+	void OnQuantization();
 };

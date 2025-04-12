@@ -13,12 +13,16 @@
 #include "MFCApplication_IPtestDoc.h"
 #include "CDownSampleDlg.h"
 #include "CUpSampleDlg.h"
+#include "CQuantizationDlg.h" 
+#include "CConstantDlg.h"
+#include "CStressTransformDlg.h"
 
 #include <propkey.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
 
 // CMFCApplicationIPtestDoc
 
@@ -231,6 +235,337 @@ void CMFCApplicationIPtestDoc::OnUpSampling()
 				m_OutputImage[i * dlg.m_UpSampleRate * m_Re_width +
 					dlg.m_UpSampleRate * j] = m_InputImage[i * m_width + j];
 			} // 재배치하여 영상 확대
+		}
+	}
+
+}
+
+void CMFCApplicationIPtestDoc::OnSumConstant()
+{
+	CConstantDlg dlg; // 상수 값을 입력받는 대화상자
+
+	int i;
+
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+
+	m_OutputImage = new unsigned char[m_Re_size];
+
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			if (m_InputImage[i] + dlg.m_Constant >= 255)
+				m_OutputImage[i] = 255;
+			
+			else
+				m_OutputImage[i] = (unsigned char)(m_InputImage[i] + dlg.m_Constant);
+			// 상수 값과 화소 값과의 덧셈
+		}
+	}
+
+}
+
+
+
+
+void CMFCApplicationIPtestDoc::OnSubConstant()
+{
+	CConstantDlg dlg;
+
+	int i;
+
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+
+	m_OutputImage = new unsigned char[m_Re_size];
+
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			if (m_InputImage[i] - dlg.m_Constant < 0)
+				m_OutputImage[i] = 0; 
+			else
+				m_OutputImage[i] = (unsigned char)(m_InputImage[i] - dlg.m_Constant);
+			// 상수 값과 화소 값과의 뺄셈
+		}
+	}
+	
+}
+
+void CMFCApplicationIPtestDoc::OnMulConstant()
+{
+	CConstantDlg dlg;
+
+	int i;
+
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+
+	m_OutputImage = new unsigned char[m_Re_size];
+
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			if (m_InputImage[i] * dlg.m_Constant > 255)
+				m_OutputImage[i] = 255;
+			// 곱의 값이 255보다 크면 255를 출력
+			else if (m_InputImage[i] * dlg.m_Constant < 0)
+				m_OutputImage[i] = 0;
+			// 곱의 값이 0보다 작으면 0을 출력
+			else
+				m_OutputImage[i]
+				= (unsigned char)(m_InputImage[i] * dlg.m_Constant);
+				// 상수 값과 화소 값 곱셈
+		}
+	}
+
+}
+
+void CMFCApplicationIPtestDoc::OnDivConstant()
+{
+	CConstantDlg dlg;
+
+	int i;
+
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+
+	m_OutputImage = new unsigned char[m_Re_size];
+
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			if (m_InputImage[i] / dlg.m_Constant > 255)
+				m_OutputImage[i] = 255;
+			// 나눗셈의 값이 255보다 크면 255를 출력
+			else if (m_InputImage[i] / dlg.m_Constant < 0)
+				m_OutputImage[i] = 0;
+			// 나눗셈의 값이 0보다 작으면 0을 출력
+			else
+				m_OutputImage[i]
+				= (unsigned char)(m_InputImage[i] / dlg.m_Constant);
+				// 상수 값과 화소 값 나눗셈
+		}
+	}
+
+}
+
+void CMFCApplicationIPtestDoc::OnAndOperate()
+{
+	CConstantDlg dlg;
+	int i;
+
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+
+	m_OutputImage = new unsigned char[m_Re_size];
+
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			// 비트 단위 AND 연산
+			if ((m_InputImage[i] & (unsigned char)dlg.m_Constant) >= 255)
+			{
+				m_OutputImage[i] = 255;
+			}
+			else if ((m_InputImage[i] & (unsigned char)dlg.m_Constant) < 0)
+			{
+				m_OutputImage[i] = 0;
+			}
+			else {
+				m_OutputImage[i] = (m_InputImage[i]
+					& (unsigned char)dlg.m_Constant);
+			}
+		}
+	}
+
+}
+
+void CMFCApplicationIPtestDoc::OnOrOperate()
+{
+	CConstantDlg dlg;
+	int i;
+
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+
+	m_OutputImage = new unsigned char[m_Re_size];
+
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			// 비트 단위 OR 연산
+			if ((m_InputImage[i] | (unsigned char)dlg.m_Constant) >= 255) {
+				m_OutputImage[i] = 255;
+			}
+			else if ((m_InputImage[i] | (unsigned char)dlg.m_Constant) < 0) {
+				m_OutputImage[i] = 0;
+			}
+			else {
+				m_OutputImage[i] = (m_InputImage[i] | (unsigned char)dlg.m_Constant);
+			}
+		}
+	}
+
+}
+
+void CMFCApplicationIPtestDoc::OnXorOperate()
+{
+	CConstantDlg dlg;
+	int i;
+
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+
+	m_OutputImage = new unsigned char[m_Re_size];
+
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			// 비트 단위 XOR 연산
+			if ((m_InputImage[i] ^ (unsigned char)dlg.m_Constant) >= 255) {
+				m_OutputImage[i] = 255;
+			}
+			else if ((m_InputImage[i] ^ (unsigned char)dlg.m_Constant) < 0) {
+				m_OutputImage[i] = 0;
+			}
+			else {
+				m_OutputImage[i] = (m_InputImage[i] ^ (unsigned char)dlg.m_Constant);
+			}
+		}
+	}
+
+}
+
+void CMFCApplicationIPtestDoc::OnGammaCorrection()
+{
+	CConstantDlg dlg;
+
+	int i;
+	double temp;
+
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+
+	m_OutputImage = new unsigned char[m_Re_size];
+
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			temp = pow(m_InputImage[i], 1 / dlg.m_Constant);
+			// 감마 값 계산
+			if (temp < 0)
+				m_OutputImage[i] = 0;
+			else if (temp > 255)
+				m_OutputImage[i] = 255;
+			else
+				m_OutputImage[i] = (unsigned char)temp;
+		}
+	}
+}
+
+
+
+
+void CMFCApplicationIPtestDoc::OnBinarization()
+{
+	CConstantDlg dlg;
+
+	int i;
+
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+
+	m_OutputImage = new unsigned char[m_Re_size];
+
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			if (m_InputImage[i] >= dlg.m_Constant)
+				m_OutputImage[i] = 255; // 임계 값보다 크면 255 출력
+			else
+				m_OutputImage[i] = 0; // 임계 값보다 작으면 0 출력
+		}
+	}
+
+
+}
+
+void CMFCApplicationIPtestDoc::OnNegaTransform()
+{
+	int i;
+
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+
+	m_OutputImage = new unsigned char[m_Re_size];
+
+	for (i = 0; i < m_size; i++)
+		m_OutputImage[i] = 255 - m_InputImage[i];
+}
+
+void CMFCApplicationIPtestDoc::OnStressTransform()
+{
+	CStressTransformDlg dlg;
+
+	int i;
+
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+
+	m_OutputImage = new unsigned char[m_Re_size];
+
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			// 입력 값이 강조 시작 값과 강조 종료 값 사이에 위치하면 255 출력
+			if (m_InputImage[i] >= dlg.m_StartPoint &&
+				m_InputImage[i] <= dlg.m_EndPoint)
+				m_OutputImage[i] = 255;
+			else
+				m_OutputImage[i] = m_InputImage[i];
+		}
+	}
+
+}
+
+void CMFCApplicationIPtestDoc::OnQuantization()
+{
+	CQuantizationDlg dlg;
+	if (dlg.DoModal() == IDOK)
+		// 양자화 비트 수를 결정하는 대화상자의 활성화 여부
+	{
+		int i, j, value, LEVEL;
+		double HIGH, * TEMP;
+
+		m_Re_height = m_height;
+		m_Re_width = m_width;
+		m_Re_size = m_Re_height * m_Re_width;
+
+		m_OutputImage = new unsigned char[m_Re_size];
+		// 양자화 처리된 영상을 출력하기 위한 메모리 할당
+
+		TEMP = new double[m_size];
+		// 입력 영상 크기(m_size)와 동일한 메모리 할당
+
+		LEVEL = 256; // 입력 영상의 양자화 단계(28=256)
+		HIGH = 256.;
+
+		value = (int)pow(2, dlg.m_QuantBit);
+		// 양자화 단계 결정(예 : 24=16)
+
+		for (i = 0; i < m_size; i++) {
+			for (j = 0; j < value; j++) {
+				if (m_InputImage[i] >= (LEVEL / value) * j &&
+					m_InputImage[i] < (LEVEL / value) * (j + 1)) {
+					TEMP[i] = (double)(HIGH / value) * j; // 양자화 수행
+				}
+			}
+		}
+		for (i = 0; i < m_size; i++) {
+			m_OutputImage[i] = (unsigned char)TEMP[i];
+			// 결과 영상 생성
 		}
 	}
 

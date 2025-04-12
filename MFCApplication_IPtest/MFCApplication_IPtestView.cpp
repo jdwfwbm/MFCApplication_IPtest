@@ -31,6 +31,19 @@ BEGIN_MESSAGE_MAP(CMFCApplicationIPtestView, CView)
 	ON_WM_RBUTTONUP()
 	ON_COMMAND(ID_Down_Sampling, &CMFCApplicationIPtestView::OnDownSampling)
 	ON_COMMAND(ID_UP_SAMPLING, &CMFCApplicationIPtestView::OnUpSampling)
+	ON_COMMAND(ID_SUM_CONSTANT, &CMFCApplicationIPtestView::OnSumConstant)
+	ON_COMMAND(ID_SUB_CONSTANT, &CMFCApplicationIPtestView::OnSubConstant)
+
+	ON_COMMAND(ID_MUL_CONSTANT, &CMFCApplicationIPtestView::OnMulConstant)
+	ON_COMMAND(ID_DIV_CONSTANT, &CMFCApplicationIPtestView::OnDivConstant)
+	ON_COMMAND(ID_AND_OPERATE, &CMFCApplicationIPtestView::OnAndOperate)
+	ON_COMMAND(ID_OR_OPERATE, &CMFCApplicationIPtestView::OnOrOperate)
+	ON_COMMAND(ID_XOR_OPERATE, &CMFCApplicationIPtestView::OnXorOperate)
+	ON_COMMAND(ID_GAMMA_CORRECTION, &CMFCApplicationIPtestView::OnGammaCorrection)
+	ON_COMMAND(ID_BINARIZATION, &CMFCApplicationIPtestView::OnBinarization)
+	ON_COMMAND(ID_NEGA_TRANSFORM, &CMFCApplicationIPtestView::OnNegaTransform)
+	ON_COMMAND(ID_STRESS_TRANSFORM, &CMFCApplicationIPtestView::OnStressTransform)
+	ON_COMMAND(ID_QUANTIZATION, &CMFCApplicationIPtestView::OnQuantization)
 END_MESSAGE_MAP()
 
 // CMFCApplicationIPtestView 생성/소멸
@@ -167,4 +180,132 @@ void CMFCApplicationIPtestView::OnUpSampling()
 	pDoc->OnUpSampling();
 
 	Invalidate(TRUE); 
+}
+
+void CMFCApplicationIPtestView::OnSumConstant()
+{
+	// TODO: Add your command handler code here
+	CMFCApplicationIPtestDoc* pDoc = GetDocument();
+	// 도큐먼트 클래스 참조
+	ASSERT_VALID(pDoc); // 인스턴스 주소를 가져옴
+
+	pDoc->OnSumConstant();
+
+	Invalidate(TRUE);
+
+}
+
+void CMFCApplicationIPtestView::OnSubConstant()
+{
+	
+	CMFCApplicationIPtestDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+
+	pDoc->OnSubConstant();
+
+	Invalidate(TRUE);
+
+}
+
+void CMFCApplicationIPtestView::OnMulConstant()
+{
+	// TODO: Add your command handler code here
+	CMFCApplicationIPtestDoc* pDoc = GetDocument(); 
+	ASSERT_VALID(pDoc); 
+
+	pDoc->OnMulConstant();
+
+	Invalidate(TRUE);
+
+}
+
+void CMFCApplicationIPtestView::OnDivConstant()
+{
+	CMFCApplicationIPtestDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+
+	pDoc->OnDivConstant();
+
+	Invalidate(TRUE);
+}
+
+void CMFCApplicationIPtestView::OnAndOperate()
+{
+	CMFCApplicationIPtestDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+
+	pDoc->OnAndOperate();
+
+	Invalidate(TRUE);
+}
+
+void CMFCApplicationIPtestView::OnOrOperate()
+{
+	CMFCApplicationIPtestDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+
+	pDoc->OnOrOperate();
+
+	Invalidate(TRUE);
+}
+
+void CMFCApplicationIPtestView::OnXorOperate()
+{
+	CMFCApplicationIPtestDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+
+	pDoc->OnXorOperate();
+
+	Invalidate(TRUE);
+}
+
+void CMFCApplicationIPtestView::OnGammaCorrection()
+{
+	CMFCApplicationIPtestDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+
+	pDoc->OnGammaCorrection();
+
+	Invalidate(TRUE);
+}
+
+void CMFCApplicationIPtestView::OnBinarization()
+{
+	CMFCApplicationIPtestDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+
+	pDoc->OnBinarization();
+
+	Invalidate(TRUE);
+}
+
+void CMFCApplicationIPtestView::OnNegaTransform()
+{
+	CMFCApplicationIPtestDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+
+	pDoc->OnNegaTransform();
+
+	Invalidate(TRUE);
+}
+
+void CMFCApplicationIPtestView::OnStressTransform()
+{
+	CMFCApplicationIPtestDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+
+	pDoc->OnXorOperate();
+
+	Invalidate(TRUE);
+}
+
+void CMFCApplicationIPtestView::OnQuantization()
+{
+	// TODO: Add your command handler code here
+	CMFCApplicationIPtestDoc* pDoc = GetDocument(); // Doc 클래스 참조
+	ASSERT_VALID(pDoc);
+
+	pDoc->OnQuantization(); // Doc 클래스에 OnQuantization 함수 호출
+
+	Invalidate(TRUE);
 }
